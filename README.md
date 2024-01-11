@@ -1,2 +1,2 @@
 # 4700PAS
-REAMME File
+README File
