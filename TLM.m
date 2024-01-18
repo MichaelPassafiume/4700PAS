@@ -5,13 +5,16 @@ set(0,'Defaultaxeslinewidth',2)
 
 set(0,'DefaultFigureWindowStyle','docked')
 
-c_c = 299792458;
-c_eps_0 = 8.8542149e-12;
-c_eps_0_cm = c_eps_0/100;
+c_c = 299792458;            % m/s TWM speed of light
+c_eps_0 = 8.8542149e-12;    % F/m vacuum permittivity
+c_eps_0_cm = c_eps_0/100;   % F/cm
 c_mu_0 = 1/c_eps_0/c_c^2;
 c_q = 1.60217653e-19;
-c_hb = 1.05457266913e-34;
+c_hb = 1.05457266913e-34;                % Dirac constant
 c_h = c_hb*2*pi;
+
+RL = 0.9i;
+RR = 0.9i;  %Reflective Efficiency
 
 InputParasL.E0=1e5;
 InputParasL.we = 0;
@@ -21,25 +24,25 @@ InputParasL.phi = 0;
 InputParasR = 0;
 
 n_g =3.5;
-vg = c_c/n_g*1e2;
+vg = c_c/n_g*1e2;       % TWM cm/s group velocity
 Lambda = 1550e-9;
 
 plotN = 10;
 
-L = 1000e-6*1e2;
+L = 1000e-6*1e2;    %cm
 XL = [0,L];
 YL =[0,InputParasL.E0];
 
-Nz =500;
+Nz =500;            %default 500
 dz =L/(Nz-1);
 dt = dz/vg;
 fsync = dt*vg/dz;
 
-Nt =floor(2*Nz);
+Nt =floor(4*Nz);
 tmax = Nt*dt;
-t_L = dt*Nz;
+t_L = dt*Nz;               % time to travel length
 
-z = linspace(0,L,Nz).';
+z = linspace(0,L,Nz).';    % Nz points, nz-1 segments
 time = nan(1,Nt);
 InputL = nan(1,Nt);
 InputR = nan(1,Nt);
@@ -61,8 +64,8 @@ InputR(1) = ErN(t,InputParasR);
 OutputR(1) = Ef(Nz);
 OutputL(1) = Er(1);
 
-Ef(1) = InputL(1);
-Er(Nz) = InputR(1);
+Ef(1) = InputL(1) + RL*Er(1);
+Er(Nz) = InputR(1) + RR*Ef(Nz);   %Reflecting
 
 figure('name', 'Fields')
 subplot(3,1,1)
@@ -92,14 +95,14 @@ for i = 2:Nt
     InputL(i) = Ef1(t,InputParasL);
     InputR(i) = ErN(t,0);
 
-    Ef(1) = InputL(i);
-    Er(Nz) = InputR(i);
+    Ef(1) = InputL(i) + RL*Er(1);
+    Er(Nz) = InputR(i) + RR*Ef(Nz);
 
     Ef(2:Nz) = fsync*Ef(1:Nz-1);
     Er(1:Nz-1) = fsync*Er(2:Nz);
 
-    OutputR(i) = Ef(Nz);
-    OutputL(i) = Er(1);
+    OutputR(i) = Ef(Nz)*(1-RR);
+    OutputL(i) = Er(1)*(1-RL);    %Reflecting
 
     if mod(i,plotN) == 0
         subplot(3,1,1)
