@@ -1,7 +1,7 @@
-set(0, 'defaulttaxesfontsize',20)
+set(0, 'defaultaxesfontsize',20)
 set(0,'DefaultFigureWindowStyle','docked')
 set(0,'DefaultLineLineWidth',2);
-set(0,'Defaulttaxeslinewidth',2)
+set(0,'Defaultaxeslinewidth',2)
 
 set(0,'DefaultFigureWindowStyle','docked')
 
@@ -26,12 +26,12 @@ Lambda = 1550e-9;
 
 plotN = 10;
 
-L = 100e-6*1e2;
+L = 1000e-6*1e2;
 XL = [0,L];
 YL =[0,InputParasL.E0];
 
 Nz =500;
-dz =L/(nz-1);
+dz =L/(Nz-1);
 dt = dz/vg;
 fsync = dt*vg/dz;
 
@@ -49,7 +49,7 @@ OutputR = nan(1,Nt);
 Ef = zeros(size(z));
 Er = zeros(size(z));
 
-Ef1 = @sourceFct;
+Ef1 = @SourceFct;
 ErN = @SourceFct;
 
 t = 0;
@@ -65,12 +65,12 @@ Ef(1) = InputL(1);
 Er(Nz) = InputR(1);
 
 figure('name', 'Fields')
-subplit(3,1,1)
+subplot(3,1,1)
 plot(z*10000,real(Ef),'r');
 hold off
 xlabel('z(\mum)')
 ylabel('E_f')
-sublot(3,1,2)
+subplot(3,1,2)
 plot(z*10000,real(Er),'b');
 xlabel('z(\mum)')
 ylabel('E_r')
@@ -102,7 +102,7 @@ for i = 2:Nt
     OutputL(i) = Er(1);
 
     if mod(i,plotN) == 0
-        subplit(3,1,1)
+        subplot(3,1,1)
         plot(z*10000,real(Ef),'r'); hold on
         plot(z*10000,imag(Ef),'r--'); hold off
         xlim(XL*1e4)
@@ -121,7 +121,7 @@ for i = 2:Nt
         legend('\Re','\Im')
 
         hold off
-        sublplot(3,1,3);
+        subplot(3,1,3);
         plot(time*1e12,real(InputL),'r'); hold on
         plot(time*1e12,real(OutputR),'g'); 
         plot(time*1e12,real(InputR),'b');
