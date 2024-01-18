@@ -64,8 +64,8 @@ InputR(1) = ErN(t,InputParasR);
 OutputR(1) = Ef(Nz);
 OutputL(1) = Er(1);
 
-Ef(1) = InputL(1) + RL*Er(1);
-Er(Nz) = InputR(1) + RR*Ef(Nz);   %Reflecting
+Ef(1) = InputL(1);
+Er(Nz) = InputR(1);  
 
 figure('name', 'Fields')
 subplot(3,1,1)
