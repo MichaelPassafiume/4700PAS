@@ -16,11 +16,11 @@ c_h = c_hb*2*pi;
 RL = 0.9i;
 RR = 0.9i;  %Reflective Efficiency
 
-InputParasL.E0=1e5;     %Amplitude?
-InputParasL.we = 0;
-InputParasL.t0 = 2e-12;
-InputParasL.wg = 5e-13;
-InputParasL.phi = 45;
+InputParasL.E0= 1e5;     %Amplitude 1e5
+InputParasL.we = 0;      %Frequency 0
+InputParasL.t0 = 2e-12;  %Delay   2e-12
+InputParasL.wg = 5e-13;  %Width of gaussian 5e-13
+InputParasL.phi = 0;     %Phase shift 0
 InputParasR = 0;
 
 n_g = 3.5; 
@@ -31,14 +31,14 @@ plotN = 10;
 
 L = 1000e-6*1e2;    %cm
 XL = [0,L];
-YL =[-InputParasL.E0,InputParasL.E0];
+YL =[-InputParasL.E0,InputParasL.E0];   %Y limits of thegraph 
 
 Nz =500;            
 dz =L/(Nz-1);
 dt = dz/vg;
 fsync = dt*vg/dz;
-
-Nt =floor(6*Nz);        %designates length of simulation
+ 
+Nt =floor(6*Nz);           %designates length of simulation
 tmax = Nt*dt;
 t_L = dt*Nz;               % time to travel length
 
@@ -52,19 +52,19 @@ OutputR = nan(1,Nt);
 Ef = zeros(size(z));       % craete array of 0 
 Er = zeros(size(z));
 
-Ef1 = @SourceFct; %Handle creation
+Ef1 = @SourceFct;          %Handle creation
 ErN = @SourceFct;
 
-t = 0;                      %  start of time 
+t = 0;                     %  start of time 
 time(1) = t;
 
 InputL(1) = Ef1(t,InputParasL);    %Calling SourceFct
 InputR(1) = ErN(t,InputParasR);
 
-OutputR(1) = Ef(Nz);        %Replacing location is OutputR with location in Ef
+OutputR(1) = Ef(Nz);       %Replacing location is OutputR with location in Ef
 OutputL(1) = Er(1);
 
-Ef(1) = InputL(1);          %Replacing location in Ef with location InputL
+Ef(1) = InputL(1);         %Replacing location in Ef with location InputL
 Er(Nz) = InputR(1);  
 
 %Create all initial graphs
