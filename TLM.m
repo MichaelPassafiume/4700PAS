@@ -16,14 +16,14 @@ c_h = c_hb*2*pi;
 RL = 0.9i;
 RR = 0.9i;  %Reflective Efficiency
 
-InputParasL.E0=1e5;
+InputParasL.E0=1e5;     %Amplitude?
 InputParasL.we = 0;
 InputParasL.t0 = 2e-12;
 InputParasL.wg = 5e-13;
-InputParasL.phi = 0;
+InputParasL.phi = 45;
 InputParasR = 0;
 
-n_g =3.5;
+n_g = 3.5; 
 vg = c_c/n_g*1e2;       % TWM cm/s group velocity
 Lambda = 1550e-9;
 
@@ -31,42 +31,43 @@ plotN = 10;
 
 L = 1000e-6*1e2;    %cm
 XL = [0,L];
-YL =[0,InputParasL.E0];
+YL =[-InputParasL.E0,InputParasL.E0];
 
-Nz =500;            %default 500
+Nz =500;            
 dz =L/(Nz-1);
 dt = dz/vg;
 fsync = dt*vg/dz;
 
-Nt =floor(4*Nz);
+Nt =floor(6*Nz);        %designates length of simulation
 tmax = Nt*dt;
 t_L = dt*Nz;               % time to travel length
 
 z = linspace(0,L,Nz).';    % Nz points, nz-1 segments
 time = nan(1,Nt);
-InputL = nan(1,Nt);
+InputL = nan(1,Nt);        % create arrays of "NaN" 1 x Nt
 InputR = nan(1,Nt);
 OutputL = nan(1,Nt);
 OutputR = nan(1,Nt);
 
-Ef = zeros(size(z));
+Ef = zeros(size(z));       % craete array of 0 
 Er = zeros(size(z));
 
-Ef1 = @SourceFct;
+Ef1 = @SourceFct; %Handle creation
 ErN = @SourceFct;
 
-t = 0;
+t = 0;                      %  start of time 
 time(1) = t;
 
-InputL(1) = Ef1(t,InputParasL);
+InputL(1) = Ef1(t,InputParasL);    %Calling SourceFct
 InputR(1) = ErN(t,InputParasR);
 
-OutputR(1) = Ef(Nz);
+OutputR(1) = Ef(Nz);        %Replacing location is OutputR with location in Ef
 OutputL(1) = Er(1);
 
-Ef(1) = InputL(1);
+Ef(1) = InputL(1);          %Replacing location in Ef with location InputL
 Er(Nz) = InputR(1);  
 
+%Create all initial graphs
 figure('name', 'Fields')
 subplot(3,1,1)
 plot(z*10000,real(Ef),'r');
@@ -88,6 +89,7 @@ ylabel('E')
 
 hold off
 
+%Keep updating graphs and recalculating propegation 
 for i = 2:Nt
     t = dt*(i-1);
     time(i) = t;
