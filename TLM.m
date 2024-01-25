@@ -1,10 +1,10 @@
 %Milestone 2
 set(0, 'defaultaxesfontsize',20)
-set(0,'DefaultFigureWindowStyle','docked')
+set(0,'DefaultFigureWindowStyle','normal')
 set(0,'DefaultLineLineWidth',2);
 set(0,'Defaultaxeslinewidth',2)
 
-set(0,'DefaultFigureWindowStyle','docked')
+set(0,'DefaultFigureWindowStyle','normal')
 
 c_c = 299792458;            % m/s TWM speed of light
 c_eps_0 = 8.8542149e-12;    % F/m vacuum permittivity
@@ -14,14 +14,19 @@ c_q = 1.60217653e-19;
 c_hb = 1.05457266913e-34;                % Dirac constant
 c_h = c_hb*2*pi;
 
-RL = 0.9i;  %Milestone 1
+%Milestone 1
+RL = 0.9i;  
 RR = 0.9i;  %Reflective Efficiency
 
+%Milestone 2
+beta_i = 8;
+beta_r = 0;
+
 InputParasL.E0=1e5;     %Amplitude?
-InputParasL.we = 0;
+InputParasL.we = 0;   %Frequency for modulation (1e13)
 InputParasL.t0 = 2e-12;
 InputParasL.wg = 5e-13;
-InputParasL.phi = 45;
+InputParasL.phi = 0;
 InputParasR = 0;
 
 n_g = 3.5; 
@@ -32,7 +37,7 @@ plotN = 10;
 
 L = 1000e-6*1e2;    %cm
 XL = [0,L];
-YL =[-InputParasL.E0,InputParasL.E0];
+YL =[2*-InputParasL.E0,2*InputParasL.E0];
 
 Nz =500;            
 dz =L/(Nz-1);
@@ -68,6 +73,10 @@ OutputL(1) = Er(1);
 Ef(1) = InputL(1);          %Replacing location in Ef with location InputL
 Er(Nz) = InputR(1);  
 
+%Milestone 2
+beta = ones(size(z))*(beta_r+1i*beta_i); %Initializing Beta
+exp_det = exp(-1i*dz*beta);
+
 %Create all initial graphs
 figure('name', 'Fields')
 subplot(3,1,1)
@@ -100,11 +109,14 @@ for i = 2:Nt
 
     Ef(1) = InputL(i) + RL*Er(1); %Milestone 1
     Er(Nz) = InputR(i) + RR*Ef(Nz);
-
-    Ef(2:Nz) = fsync*Ef(1:Nz-1);
-    Er(1:Nz-1) = fsync*Er(2:Nz);
-
-    OutputR(i) = Ef(Nz)*(1-RR);   %Milestone 1
+    
+    %Milestone 2 exp_det(1:Nz-1).*
+    Ef(2:Nz) = fsync*exp_det(1:Nz-1).*Ef(1:Nz-1); %Add in the -iBE part to the model
+    %Milestone 2 exp_det(2:Nz).*
+    Er(1:Nz-1) = fsync*exp_det(2:Nz).*Er(2:Nz);
+    
+    %Milestone 1
+    OutputR(i) = Ef(Nz)*(1-RR);   
     OutputL(i) = Er(1)*(1-RL);    %Reflecting
 
     if mod(i,plotN) == 0
