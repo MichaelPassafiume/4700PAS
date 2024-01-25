@@ -4,6 +4,7 @@ set(0,'DefaultFigureWindowStyle','normal')
 set(0,'DefaultLineLineWidth',2);
 set(0,'Defaultaxeslinewidth',2)
 
+set(0, 'DefaultFigurePosition', get(0, 'Screensize'))
 set(0,'DefaultFigureWindowStyle','normal')
 
 c_c = 299792458;            % m/s TWM speed of light
@@ -16,16 +17,16 @@ c_h = c_hb*2*pi;
 
 %Milestone 1
 RL = 0.9i;  
-RR = 0.9i;  %Reflective Efficiency
+RR = 0.9i;  %Reflective Efficiency 0.9i
 
 %Milestone 2
 beta_i = 8;
-beta_r = 80;
+beta_r = 0;
 
 InputParasL.E0=1e5;     %Amplitude?
-InputParasL.we = 1e13;   %Frequency for modulation (1e13)
+InputParasL.we = 0;   %Frequency for modulation (1e13)
 InputParasL.t0 = 2e-12;
-InputParasL.wg = 5e-13;
+InputParasL.wg = 5e-13; %5e-13 
 InputParasL.phi = 0;
 InputParasR = 0;
 
@@ -44,7 +45,7 @@ dz =L/(Nz-1);
 dt = dz/vg;
 fsync = dt*vg/dz;
 
-Nt =floor(2*Nz);        %designates length of simulation
+Nt =floor(2.5*Nz);        %designates length of simulation
 tmax = Nt*dt;
 t_L = dt*Nz;               % time to travel length
 
@@ -154,29 +155,31 @@ for i = 2:Nt
     end
 end
 
-%Milestone 2
+%Milestone 2 Taking FFT of the output and input 
 fftOutput = fftshift(fft(OutputR));
+fftInput = fftshift(fft(InputL));
+%Getting the vector of frequencies that are based of time
 omega = fftshift(wspace(time));
 figure('name', 'FFT')
 subplot(3,1,1)
 plot(time*1e12,real(InputL),'r'); hold on
-plot(time*1e12,real(OutputR),'r--'); 
+plot(time*1e12,real(OutputR),'g'); 
 plot(time*1e12,real(InputR),'b'); hold on
-plot(time*1e12,real(OutputL),'b--');
+plot(time*1e12,real(OutputL),'m');
+legend('Left Input','Right Output', 'Right Input', 'Left Output', 'Location', 'east')
 xlabel('time(ps)')
 ylabel('E')
 hold off
 subplot(3,1,2)
-plot(z*10000,real(Er),'b');
-xlabel('z(\mum)')
-ylabel('E_r')
+plot(omega, abs(fftOutput)); hold on 
+plot(omega, abs(fftInput));
+legend('Outout', 'Input','east');
+xlabel('THz')
+ylabel('|E|')
 hold off
 subplot(3,1,3)
-plot(time*1e12,real(InputL),'r'); hold on
-plot(time*1e12,real(OutputR),'r--'); 
-plot(time*1e12,real(InputR),'b'); hold on
-plot(time*1e12,real(OutputL),'b--');
-xlabel('time(ps)')
-ylabel('E')
+plot(omega, unwrap(angle(fftOutput))); %Unwrap goes from 0-360-0 to 0-360-720
+xlabel('THz')
+ylabel('phase (E)')
 
 hold off
