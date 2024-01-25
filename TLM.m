@@ -20,10 +20,10 @@ RR = 0.9i;  %Reflective Efficiency
 
 %Milestone 2
 beta_i = 8;
-beta_r = 0;
+beta_r = 80;
 
 InputParasL.E0=1e5;     %Amplitude?
-InputParasL.we = 0;   %Frequency for modulation (1e13)
+InputParasL.we = 1e13;   %Frequency for modulation (1e13)
 InputParasL.t0 = 2e-12;
 InputParasL.wg = 5e-13;
 InputParasL.phi = 0;
@@ -37,7 +37,7 @@ plotN = 10;
 
 L = 1000e-6*1e2;    %cm
 XL = [0,L];
-YL =[2*-InputParasL.E0,2*InputParasL.E0];
+YL =[5*-InputParasL.E0,5*InputParasL.E0];
 
 Nz =500;            
 dz =L/(Nz-1);
@@ -153,3 +153,9 @@ for i = 2:Nt
         pause(0.01)
     end
 end
+
+%Milestone 2
+fftOutput = fftshift(fft(OutputR));
+omega = fftshift(wspace(time));
+
+
