@@ -44,7 +44,7 @@ dz =L/(Nz-1);
 dt = dz/vg;
 fsync = dt*vg/dz;
 
-Nt =floor(6*Nz);        %designates length of simulation
+Nt =floor(2*Nz);        %designates length of simulation
 tmax = Nt*dt;
 t_L = dt*Nz;               % time to travel length
 
@@ -157,5 +157,26 @@ end
 %Milestone 2
 fftOutput = fftshift(fft(OutputR));
 omega = fftshift(wspace(time));
+figure('name', 'FFT')
+subplot(3,1,1)
+plot(time*1e12,real(InputL),'r'); hold on
+plot(time*1e12,real(OutputR),'r--'); 
+plot(time*1e12,real(InputR),'b'); hold on
+plot(time*1e12,real(OutputL),'b--');
+xlabel('time(ps)')
+ylabel('E')
+hold off
+subplot(3,1,2)
+plot(z*10000,real(Er),'b');
+xlabel('z(\mum)')
+ylabel('E_r')
+hold off
+subplot(3,1,3)
+plot(time*1e12,real(InputL),'r'); hold on
+plot(time*1e12,real(OutputR),'r--'); 
+plot(time*1e12,real(InputR),'b'); hold on
+plot(time*1e12,real(OutputL),'b--');
+xlabel('time(ps)')
+ylabel('E')
 
-
+hold off
