@@ -1,3 +1,4 @@
+%Milestone 2
 set(0, 'defaultaxesfontsize',20)
 set(0,'DefaultFigureWindowStyle','docked')
 set(0,'DefaultLineLineWidth',2);
