@@ -18,8 +18,8 @@ rw = 1.0;           % Ridge half-width
 side = 1.5;         % Space on side
 
 % Grid size:
-dx = 0.0125*2.828;        % grid size (horizontal)
-dy = 0.0125*2.828;        % grid size (vertical)
+dx = 0.0125;        % grid size (horizontal)
+dy = 0.0125;        % grid size (vertical)
 
 lambda = 1.55;      % vacuum wavelength
 nmodes = 1;         % number of modes to compute
