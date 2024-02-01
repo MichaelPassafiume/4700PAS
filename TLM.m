@@ -38,14 +38,14 @@ plotN = 10;
 
 L = 1000e-6*1e2;    %cm
 XL = [0,L];
-YL =[5*-InputParasL.E0,5*InputParasL.E0];
+YL =[1*-InputParasL.E0,1*InputParasL.E0]; %vertical scale
 
 Nz =500;            
 dz =L/(Nz-1);
 dt = dz/vg;
 fsync = dt*vg/dz;
 
-Nt =floor(2.5*Nz);        %designates length of simulation
+Nt =floor(6*Nz);        %designates length of simulation
 tmax = Nt*dt;
 t_L = dt*Nz;               % time to travel length
 
@@ -181,13 +181,15 @@ hold off
 subplot(3,1,2)
 plot(omega, abs(fftOutput)); hold on 
 plot(omega, abs(fftInput));
-legend('Outout', 'Input','east');
-xlabel('THz')
+legend('Output', 'Input','east');
+xlim([-0.5E14,0.5E14])
+xlabel('THz*10')
 ylabel('|E|')
 hold off
 subplot(3,1,3)
-plot(omega, unwrap(angle(fftOutput))); %Unwrap goes from 0-360-0 to 0-360-720
+plot(omega, unwrap(angle(fftOutput))); hold on%Unwrap goes from 0-360-0 to 0-360-720
+plot(omega, unwrap(angle(fftInput)));
 xlabel('THz')
 ylabel('phase (E)')
-
+legend('Output', 'Input','east');
 hold off
