@@ -119,10 +119,11 @@ for i = 2:Nt
     Ef(1) = InputL(i) + RL*Er(1); %Milestone 1 RL
     Er(Nz) = InputR(i) + RR*Ef(Nz); %Milestone 1 RR
     
+    Ef_temp = Ef(1:Nz-1);
     %Milestone 3 inlcude kappa and couple
     Ef(2:Nz) = fsync*Ef(1:Nz-1) + 1i*dz*kappa(2:Nz).*Er(2:Nz);
     %Milestone 3 include kappa and couple 
-    Er(1:Nz-1) = fsync*Er(2:Nz) + 1i*dz*kappa(1:Nz-1).*Ef(1:Nz-1);
+    Er(1:Nz-1) = fsync*Er(2:Nz) + 1i*dz*kappa(1:Nz-1).*Ef_temp;
     
     %Milestone 1
     OutputR(i) = Ef(Nz)*(1-RR);   
