@@ -1,4 +1,4 @@
-%Milestone 2
+%Milestone 3
 set(0, 'defaultaxesfontsize',20)
 set(0,'DefaultFigureWindowStyle','normal')
 set(0,'DefaultLineLineWidth',2);
@@ -22,6 +22,12 @@ RR = 0.9i;  %Reflective Efficiency 0.9i
 %Milestone 2
 beta_i = 8;
 beta_r = 0;
+
+%Milestone 3
+kappa0 = 100;
+kappa = kappa0*ones(sinze(z));
+kappa(z<L*kappaStart) = 0;
+kappa(z>L*kappaStop) = 0;
 
 InputParasL.E0=1e5;     %Amplitude?
 InputParasL.we = 0;   %Frequency for modulation (1e13)
@@ -108,13 +114,13 @@ for i = 2:Nt
     InputL(i) = Ef1(t,InputParasL);
     InputR(i) = ErN(t,0);
 
-    Ef(1) = InputL(i) + RL*Er(1); %Milestone 1
-    Er(Nz) = InputR(i) + RR*Ef(Nz);
+    Ef(1) = InputL(i) + RL*Er(1); %Milestone 1 RL
+    Er(Nz) = InputR(i) + RR*Ef(Nz); %Milestone 1 RR
     
-    %Milestone 2 exp_det(1:Nz-1).*
-    Ef(2:Nz) = fsync*exp_det(1:Nz-1).*Ef(1:Nz-1); %Add in the -iBE part to the model
-    %Milestone 2 exp_det(2:Nz).*
-    Er(1:Nz-1) = fsync*exp_det(2:Nz).*Er(2:Nz);
+    %Milestone 3 inlcude kappa
+    Ef(2:Nz) = fsync*Ef(1:Nz-1);
+    %Milestone 3 include kappa
+    Er(1:Nz-1) = fsync*Er(2:Nz);
     
     %Milestone 1
     OutputR(i) = Ef(Nz)*(1-RR);   
