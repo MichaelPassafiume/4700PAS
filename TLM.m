@@ -23,12 +23,6 @@ RR = 0.9i;  %Reflective Efficiency 0.9i
 beta_i = 8;
 beta_r = 0;
 
-%Milestone 3
-kappa0 = 100;
-kappa = kappa0*ones(sinze(z));
-kappa(z<L*kappaStart) = 0;
-kappa(z>L*kappaStop) = 0;
-
 InputParasL.E0=1e5;     %Amplitude?
 InputParasL.we = 0;   %Frequency for modulation (1e13)
 InputParasL.t0 = 2e-12;
@@ -61,6 +55,12 @@ InputL = nan(1,Nt);        % create arrays of "NaN" 1 x Nt
 InputR = nan(1,Nt);
 OutputL = nan(1,Nt);
 OutputR = nan(1,Nt);
+
+%Milestone 3
+kappa0 = 100;
+kappa = kappa0*ones(size(z)); %fill a matrix of size z with the value of kappa0
+kappa(z<L*kappaStart) = 0;
+kappa(z>L*kappaStop) = 0;
 
 Ef = zeros(size(z));       % craete array of 0 
 Er = zeros(size(z));
@@ -117,10 +117,10 @@ for i = 2:Nt
     Ef(1) = InputL(i) + RL*Er(1); %Milestone 1 RL
     Er(Nz) = InputR(i) + RR*Ef(Nz); %Milestone 1 RR
     
-    %Milestone 3 inlcude kappa
-    Ef(2:Nz) = fsync*Ef(1:Nz-1);
-    %Milestone 3 include kappa
-    Er(1:Nz-1) = fsync*Er(2:Nz);
+    %Milestone 3 inlcude kappa and couple
+    Ef(2:Nz) = fsync*Ef(1:Nz-1) + 1i*dz*kappa(2:Nz).*Er(2:Nz);
+    %Milestone 3 include kappa and couple 
+    Er(1:Nz-1) = fsync*Er(2:Nz) + 1i*dz*kappa(1:Nz-1).*Ef(1:Nz-1);
     
     %Milestone 1
     OutputR(i) = Ef(Nz)*(1-RR);   
