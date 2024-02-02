@@ -1,7 +1,7 @@
 winstyle = 'docked';
 % winstyle = 'normal';
 
-set(0,'DefaultFigureWindowStyle',winstyle)
+set(0,'DefaultFigureWindowStyle', 'normal')
 set(0,'defaultaxesfontsize',18)
 set(0,'defaultaxesfontname','Times New Roman')
 % set(0,'defaultfigurecolor',[1 1 1])
@@ -44,9 +44,8 @@ mu{1} = ones(nx{1},ny{1})*c_mu_0;
 %125-150 x, 55-95 y
 %epi{1}(125:150,55:95)= c_eps_0*11.3;
 epi{1} = ones(nx{1},ny{1})*c_eps_0;
-epi{1}(125:150,55:95)= c_eps_0*11.3;
-epi{2} = ones(nx{1},ny{1})*c_eps_0;
-epi{2}(10:40,55:95)= c_eps_0*11.3;
+epi{1}(125:5:150,55:2:95)= c_eps_0*11.3;
+
 
 sigma{1} = zeros(nx{1},ny{1});
 sigmaH{1} = zeros(nx{1},ny{1});
@@ -68,23 +67,29 @@ Plot.pv = [0 0 90];
 Plot.reglim = [0 xMax{1} 0 yMax];
 
 
-bc{1}.NumS = 1; %setting 1 source
+bc{1}.NumS = 2; %setting 2 source
 bc{1}.s(1).xpos = nx{1}/(4) + 1; %x location of source
 bc{1}.s(1).type = 'ss'; %setting the source to softsource
 bc{1}.s(1).fct = @PlaneWaveBC; %defining the response of the source to be the plane wave function
+
+bc{1}.s(2).xpos = nx{1}/(2) + 1; %x location of source
+bc{1}.s(2).type = 'ss'; %setting the source to softsource
+bc{1}.s(2).fct = @PlaneWaveBC; %defining the response of the source to be the plane wave function
 % mag = -1/c_eta_0;
 mag = 1;
 phi = 0;
 omega = f*2*pi;
 betap = 0;
 t0 = 30e-15;
-st = 15e-15;
+t1 = 30e-6;
+st = -0.05; %15e-15
 s = 0;
 y0 = yMax/2;
+y1 = yMax/4;
 sty = 1.5*lambda;
 %first boundary condition, source 1, setting the parameters
 bc{1}.s(1).paras = {mag,phi,omega,betap,t0,st,s,y0,sty,'s'}; 
-
+bc{1}.s(2).paras = {mag,phi,omega,betap,t0,st,s,y1,sty,'s'}; 
 Plot.y0 = round(y0/dx);
 
 %boundary conditions for the 4 walls, set to absoarb 

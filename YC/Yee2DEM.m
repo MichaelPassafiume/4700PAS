@@ -244,9 +244,13 @@ for i = 1:nSteps
             
             Einc = bc{k}.s(1).fct(yC{k},i,t,bc{k}.s(1).paras);
             Eincp = bc{k}.s(1).fct(yC{k},i,t-ds/c_c/2,bc{k}.s(1).paras);
-            
+            Einc1 = bc{k}.s(2).fct(yC{k},i,t,bc{k}.s(2).paras);
+            Eincp1 = bc{k}.s(2).fct(yC{k},i,t-ds/c_c/2,bc{k}.s(2).paras);
+
             Hy{k}(bc{k}.s(1).xpos,:) = Hy{k}(bc{k}.s(1).xpos,:) + dt/ds/c_mu_0*Einc;
             Ez{k}(bc{k}.s(1).xpos-1,:) = Ez{k}(bc{k}.s(1).xpos-1,:) - dt/ds/c_eps_0/c_eta_0*Eincp;
+            Hy{k}(bc{k}.s(2).xpos,:) = Hy{k}(bc{k}.s(2).xpos,:) + dt/ds/c_mu_0*Einc1;
+            Ez{k}(bc{k}.s(2).xpos-1,:) = Ez{k}(bc{k}.s(2).xpos-1,:) - dt/ds/c_eps_0/c_eta_0*Eincp1;
             
         end
         
