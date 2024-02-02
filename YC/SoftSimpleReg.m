@@ -26,8 +26,8 @@ c_mu_0 = 1.2566370614e-6;         % vacuum permeability
 c_eta_0 = sqrt(c_mu_0/c_eps_0);
 
 
-tSim = 200e-15
-f = 230e12;
+tSim = 200e-15 %simulation time
+f = 230e12; %frequency
 lambda = c_c/f;
 
 xMax{1} = 20e-6;
@@ -39,8 +39,14 @@ Reg.n = 1;
 
 mu{1} = ones(nx{1},ny{1})*c_mu_0;
 
+%region of different permittivity 
+%epi{1} = ones(nx{1},ny{1})*c_eps_0;
+%125-150 x, 55-95 y
+%epi{1}(125:150,55:95)= c_eps_0*11.3;
 epi{1} = ones(nx{1},ny{1})*c_eps_0;
 epi{1}(125:150,55:95)= c_eps_0*11.3;
+epi{2} = ones(nx{1},ny{1})*c_eps_0;
+epi{2}(10:40,55:95)= c_eps_0*11.3;
 
 sigma{1} = zeros(nx{1},ny{1});
 sigmaH{1} = zeros(nx{1},ny{1});
@@ -62,10 +68,10 @@ Plot.pv = [0 0 90];
 Plot.reglim = [0 xMax{1} 0 yMax];
 
 
-bc{1}.NumS = 1;
-bc{1}.s(1).xpos = nx{1}/(4) + 1;
-bc{1}.s(1).type = 'ss';
-bc{1}.s(1).fct = @PlaneWaveBC;
+bc{1}.NumS = 1; %setting 1 source
+bc{1}.s(1).xpos = nx{1}/(4) + 1; %x location of source
+bc{1}.s(1).type = 'ss'; %setting the source to softsource
+bc{1}.s(1).fct = @PlaneWaveBC; %defining the response of the source to be the plane wave function
 % mag = -1/c_eta_0;
 mag = 1;
 phi = 0;
@@ -76,10 +82,12 @@ st = 15e-15;
 s = 0;
 y0 = yMax/2;
 sty = 1.5*lambda;
-bc{1}.s(1).paras = {mag,phi,omega,betap,t0,st,s,y0,sty,'s'};
+%first boundary condition, source 1, setting the parameters
+bc{1}.s(1).paras = {mag,phi,omega,betap,t0,st,s,y0,sty,'s'}; 
 
 Plot.y0 = round(y0/dx);
 
+%boundary conditions for the 4 walls, set to absoarb 
 bc{1}.xm.type = 'a';
 bc{1}.xp.type = 'a';
 bc{1}.ym.type = 'a';
@@ -92,6 +100,7 @@ Reg.n  = 1;
 Reg.xoff{1} = 0;
 Reg.yoff{1} = 0;
 
+%Calling the RunYeeReg script
 RunYeeReg
 
 
