@@ -16,8 +16,8 @@ c_hb = 1.05457266913e-34;                % Dirac constant
 c_h = c_hb*2*pi;
 
 %Milestone 1
-RL = 0.9i;  
-RR = 0.9i;  %Reflective Efficiency 0.9i
+RL = 0.0i;  
+RR = 0.0i;  %Reflective Efficiency 0.9i
 
 %Milestone 2
 beta_i = 8;
@@ -45,7 +45,7 @@ dz =L/(Nz-1);
 dt = dz/vg;
 fsync = dt*vg/dz;
 
-Nt =floor(6*Nz);        %designates length of simulation
+Nt =floor(2*Nz);        %designates length of simulation
 tmax = Nt*dt;
 t_L = dt*Nz;               % time to travel length
 
