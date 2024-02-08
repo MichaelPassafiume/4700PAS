@@ -67,6 +67,9 @@ kappa(z>L*kappaStop) = 0;
 Ef = zeros(size(z));       % craete array of 0 
 Er = zeros(size(z));
 
+%Milestone 4
+
+
 Ef1 = @SourceFct; %Handle creation
 ErN = @SourceFct;
 
