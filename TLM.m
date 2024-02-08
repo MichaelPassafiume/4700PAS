@@ -124,7 +124,12 @@ hold off
 for i = 2:Nt
     t = dt*(i-1);
     time(i) = t;
-
+    Pf(1) = 0;
+    Pf(Nz) = 0;
+    Pr(1) = 0;
+    Pr(Nz) = 0;
+    Cw0 = -LGamma + 1i*Lw0;
+    
     InputL(i) = Ef1(t,InputParasL);
     InputR(i) = ErN(t,0);
 
