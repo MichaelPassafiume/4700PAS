@@ -1,4 +1,4 @@
-%Milestone 3
+%Milestone 4
 set(0, 'defaultaxesfontsize',20)
 set(0,'DefaultFigureWindowStyle','normal')
 set(0,'DefaultLineLineWidth',2);
@@ -45,7 +45,7 @@ dz =L/(Nz-1);
 dt = dz/vg;
 fsync = dt*vg/dz;
 
-Nt =floor(6*Nz);        %designates length of simulation
+Nt =floor(2*Nz);        %designates length of simulation
 tmax = Nt*dt;
 t_L = dt*Nz;               % time to travel length
 
@@ -58,8 +58,8 @@ OutputR = nan(1,Nt);
 
 %Milestone 3
 kappa0 = 100;
-kappaStart = 1/3;
-kappaStop = 2/3;
+kappaStart = 4/3;
+kappaStop = 4/3;
 kappa = kappa0*ones(size(z)); %fill a matrix of size z with the value of kappa0
 kappa(z<L*kappaStart) = 0;
 kappa(z>L*kappaStop) = 0;
@@ -141,7 +141,15 @@ for i = 2:Nt
     Ef(2:Nz) = fsync*Ef(1:Nz-1) + 1i*dz*kappa(2:Nz).*Er(2:Nz);
     %Milestone 3 include kappa and couple 
     Er(1:Nz-1) = fsync*Er(2:Nz) + 1i*dz*kappa(1:Nz-1).*Ef_temp;
-    
+
+    Tf = LGamma*Ef(1:Nz-2) + Cw0*Pfp(2:Nz-1) + LGamma*Efp(1:Nz-2);
+    Pf(2:Nz-1) = (Pfp(2:Nz-1)+0.5*dt*Tf)./(1-0.5*dt*Cw0);
+    Tr = LGamma*Er(3:Nz) + Cw0*Prp(2:Nz-1) + LGamma*Erp(3:Nz);
+    Pr(2:Nz-1) = (Prp(2:Nz-1) + 0.5*dt*Tr)./(1-0.5*dt*Cw0);
+
+    Ef(2:Nz-1) = Ef(2:Nz-1) - LGain*(Ef(2:Nz-1)-Pf(2:Nz-1));
+    Er(2:Nz-1) = Er(2:Nz-1) - LGain*(Er(2:Nz-1)-Pr(2:Nz-1));
+
     %Milestone 1
     OutputR(i) = Ef(Nz)*(1-RR);   
     OutputL(i) = Er(1)*(1-RL);    %Reflecting
@@ -179,6 +187,10 @@ for i = 2:Nt
         hold off
         pause(0.01)
     end
+    Efp = Ef;
+    Erp = Er;
+    Pfp = Pf;
+    Prp = Pr;
 end
 
 %Milestone 2 Taking FFT of the output and input 
