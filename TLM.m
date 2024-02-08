@@ -16,14 +16,14 @@ c_hb = 1.05457266913e-34;                % Dirac constant
 c_h = c_hb*2*pi;
 
 %Milestone 1
-RL = 0.9i;  
-RR = 0.9i;  %Reflective Efficiency 0.9i
+RL = 0.0i;  
+RR = 0.0i;  %Reflective Efficiency 0.9i
 
 %Milestone 2
 beta_i = 8;
 beta_r = 0;
 
-InputParasL.E0=1e5;     %Amplitude?
+InputParasL.E0=100e5;     %Amplitude?
 InputParasL.we = 0;   %Frequency for modulation (1e13)
 InputParasL.t0 = 2e-12;
 InputParasL.wg = 5e-13; %5e-13 
@@ -57,14 +57,14 @@ OutputL = nan(1,Nt);
 OutputR = nan(1,Nt);
 
 %Milestone 3
-kappa0 = 100;
-kappaStart = 4/3;
-kappaStop = 4/3;
+kappa0 = 0; %100
+kappaStart = 1/3;
+kappaStop = 2/3;
 kappa = kappa0*ones(size(z)); %fill a matrix of size z with the value of kappa0
 kappa(z<L*kappaStart) = 0;
 kappa(z>L*kappaStop) = 0;
 
-Ef = zeros(size(z));       % craete array of 0 
+Ef = zeros(size(z));       % create array of 0 
 Er = zeros(size(z));
 
 %Milestone 4
@@ -74,7 +74,7 @@ Efp = Ef;
 Erp = Er;
 Pfp = Pf;
 Prp = Pr;
-g_fwhm = 3.53e+012/10;
+g_fwhm = 5*3.53e+012/10;
 LGamma = g_fwhm*2*pi;
 Lw0 = 0.0;
 LGain = 0.1;
@@ -140,7 +140,7 @@ for i = 2:Nt
     %Milestone 3 inlcude kappa and couple
     Ef(2:Nz) = fsync*Ef(1:Nz-1) + 1i*dz*kappa(2:Nz).*Er(2:Nz);
     %Milestone 3 include kappa and couple 
-    Er(1:Nz-1) = fsync*Er(2:Nz) + 1i*dz*kappa(1:Nz-1).*Ef_temp;
+    Er(1:Nz-1) = fsync*Er(2:Nz) + 1i*dz*kappa(1:Nz-1).*Ef(1:Nz-1);
 
     Tf = LGamma*Ef(1:Nz-2) + Cw0*Pfp(2:Nz-1) + LGamma*Efp(1:Nz-2);
     Pf(2:Nz-1) = (Pfp(2:Nz-1)+0.5*dt*Tf)./(1-0.5*dt*Cw0);
@@ -209,12 +209,12 @@ xlabel('time(ps)')
 ylabel('E')
 hold off
 subplot(3,1,2)
-plot(omega, abs(fftOutput)); hold on 
-plot(omega, abs(fftInput));
+plot(omega, 20*log(abs(fftOutput))); hold on 
+plot(omega, 20*log(abs(fftInput)));
 legend('Output', 'Input','east');
 xlim([-0.5E14,0.5E14])
 xlabel('THz*10')
-ylabel('|E|')
+ylabel('20log(|E|)')
 hold off
 subplot(3,1,3)
 plot(omega, unwrap(angle(fftOutput))); hold on%Unwrap goes from 0-360-0 to 0-360-720
