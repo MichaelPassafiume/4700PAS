@@ -68,7 +68,16 @@ Ef = zeros(size(z));       % craete array of 0
 Er = zeros(size(z));
 
 %Milestone 4
-
+Pf = zeros(size(z));
+Pr = zeros(size(z));
+Efp = Ef;
+Erp = Er;
+Pfp = Pf;
+Prp = Pr;
+g_fwhm = 3.53e+012/10;
+LGamma = g_fwhm*2*pi;
+Lw0 = 0.0;
+LGain = 0.1;
 
 Ef1 = @SourceFct; %Handle creation
 ErN = @SourceFct;
