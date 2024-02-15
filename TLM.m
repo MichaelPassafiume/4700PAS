@@ -23,10 +23,10 @@ RR = 0.0i;  %Reflective Efficiency 0.9i
 beta_i = 8;
 beta_r = 0;
 
-InputParasL.E0=1e5;     %Amplitude?
+InputParasL.E0=100e5;     %Amplitude?
 InputParasL.we = 0;   %Frequency for modulation (1e13)
 InputParasL.t0 = 2e-12;
-InputParasL.wg = 5e-13; %5e-13 
+InputParasL.wg = 1e-13; %5e-13 
 InputParasL.phi = 0;
 InputParasR = 0;
 
@@ -58,11 +58,27 @@ OutputR = nan(1,Nt);
 
 %Milestone 3
 kappa0 = 100;
-kappaStart = 1/3;
-kappaStop = 2/3;
-kappa = kappa0*ones(size(z)); %fill a matrix of size z with the value of kappa0
-kappa(z<L*kappaStart) = 0;
-kappa(z>L*kappaStop) = 0;
+kappaStart1 = 0.3;
+kappaStop1 = 0.35;
+kappaStart2 = 0.35;
+kappaStop2 = 0.40;
+kappaStart3 = 0.40;
+kappaStop3 = 0.45;
+kappaStart4 = 0.45;
+kappaStop4 = 0.50;
+kappaStart5 = 0.50;
+kappaStop5 = 0.55;
+kappa = 0*ones(size(z)); %fill a matrix of size z with the value of kappa0
+kappa(z>L*kappaStart1) = kappa0*0.5;
+kappa(z>L*kappaStop1) = 0;
+kappa(z>L*kappaStart2) = kappa0*0.53;
+kappa(z>L*kappaStop2) = 0;
+kappa(z>L*kappaStart3) = kappa0*0.0;
+kappa(z>L*kappaStop3) = 0;
+kappa(z>L*kappaStart4) = kappa0*0.8;
+kappa(z>L*kappaStop4) = 0;
+kappa(z>L*kappaStart5) = kappa0*0.0;
+kappa(z>L*kappaStop5) = 0;
 
 Ef = zeros(size(z));       % craete array of 0 
 Er = zeros(size(z));
@@ -87,6 +103,8 @@ beta = ones(size(z))*(beta_r+1i*beta_i); %Initializing Beta
 exp_det = exp(-1i*dz*beta);
 
 %Create all initial graphs
+
+
 figure('name', 'Fields')
 subplot(3,1,1)
 plot(z*10000,real(Ef),'r');
@@ -153,12 +171,12 @@ for i = 2:Nt
         plot(time*1e12,real(InputL),'r'); hold on
         plot(time*1e12,real(OutputR),'g'); 
         plot(time*1e12,real(InputR),'b');
-        plot(time*1e12,real(OutputL),'m');
+        plot(time*1e12,5*imag(OutputL),'m--');
         xlim([0,Nt*dt*1e12])
         ylim(YL)
         xlabel('time(ps)')
         ylabel('0')
-        legend('Left Input','Right Output', 'Right Input', 'Left Output', 'Location', 'east')
+        legend('Left Input','Right Output', 'Right Input', 'Left Output*5', 'Location', 'west')
         hold off
         pause(0.01)
     end
@@ -194,3 +212,6 @@ xlabel('THz')
 ylabel('phase (E)')
 legend('Output', 'Input','east');
 hold off
+
+figure('name', 'Grading')
+plot(z,kappa);
