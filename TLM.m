@@ -20,8 +20,8 @@ RL = 0.9i;
 RR = 0.9i;  %Reflective Efficiency 0.9i
 
 %Milestone 2
-beta_i = 0;
-beta_r = 80;
+beta_i = 8;
+beta_r = 0;
 
 InputParasL.E0=1e5;     %Amplitude?
 InputParasL.we = 0;   %Frequency for modulation (1e13)
