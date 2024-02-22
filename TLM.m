@@ -20,7 +20,7 @@ RL = 0.0i;
 RR = 0.0i;  %Reflective Efficiency 0.9i
 
 %Milestone 2
-beta_i = 8;
+beta_i = 0;
 beta_r = 0;
 
 InputParasL.E0=1e5;     %Amplitude?
