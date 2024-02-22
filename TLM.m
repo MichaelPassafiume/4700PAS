@@ -17,7 +17,7 @@ RL = 0.9i;
 RR = 0.9i;  %Reflective Efficiency
 
 InputParasL.E0= 1e5;     %Amplitude 1e5
-InputParasL.we = 1e13;      %Frequency 0
+InputParasL.we = 0;      %Frequency 0
 InputParasL.t0 = 2e-12;  %Delay   2e-12
 InputParasL.wg = 5e-13;  %Width of gaussian 5e-13
 InputParasL.phi = 0;     %Phase shift 0
