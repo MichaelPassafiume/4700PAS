@@ -24,7 +24,7 @@ beta_i = 8;
 beta_r = 0;
 
 InputParasL.E0=1e5;     %Amplitude?
-InputParasL.we = 0;   %Frequency for modulation (1e13)
+InputParasL.we = 1e13;   %Frequency for modulation (1e13)
 InputParasL.t0 = 2e-12;
 InputParasL.wg = 5e-13; %5e-13 
 InputParasL.phi = 0;
