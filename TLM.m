@@ -16,12 +16,21 @@ c_h = c_hb*2*pi;
 RL = 0.9i;
 RR = 0.9i;  %Reflective Efficiency
 
+% Left Input
 InputParasL.E0= 1e5;     %Amplitude 1e5
 InputParasL.we = 0;      %Frequency 0
 InputParasL.t0 = 2e-12;  %Delay   2e-12
 InputParasL.wg = 5e-13;  %Width of gaussian 5e-13
 InputParasL.phi = 0;     %Phase shift 0
 InputParasR = 0;
+
+% Right Input
+% InputParasR.E0= 1e5;     %Amplitude 1e5
+% InputParasR.we = 0;      %Frequency 0
+% InputParasR.t0 = 2e-12;  %Delay   2e-12
+% InputParasR.wg = 5e-13;  %Width of gaussian 5e-13
+% InputParasR.phi = 0;     %Phase shift 0
+% InputParasL = 0;
 
 n_g = 3.5; 
 vg = c_c/n_g*1e2;       % TWM cm/s group velocity
@@ -32,6 +41,7 @@ plotN = 10;
 L = 1000e-6*1e2;    %cm
 XL = [0,L];
 YL =[-InputParasL.E0,InputParasL.E0];   %Y limits of thegraph 
+%YL =[-InputParasR.E0,InputParasR.E0]; 
 
 Nz =500;            
 dz =L/(Nz-1);              % setting d's
@@ -95,7 +105,7 @@ for i = 2:Nt
     time(i) = t;
 
     InputL(i) = Ef1(t,InputParasL);
-    InputR(i) = ErN(t,0);
+    InputR(i) = ErN(t,InputParasR);
 
     Ef(1) = InputL(i) + RL*Er(1);
     Er(Nz) = InputR(i) + RR*Ef(Nz);
