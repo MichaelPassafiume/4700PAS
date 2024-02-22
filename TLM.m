@@ -57,7 +57,7 @@ OutputL = nan(1,Nt);
 OutputR = nan(1,Nt);
 
 %Milestone 3
-kappa0 = 0; %100
+kappa0 = 100; %100
 kappaStart = 1/3;
 kappaStop = 2/3;
 kappa = kappa0*ones(size(z)); %fill a matrix of size z with the value of kappa0
