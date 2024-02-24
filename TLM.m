@@ -69,15 +69,15 @@ kappaStop4 = 0.50;
 kappaStart5 = 0.50;
 kappaStop5 = 0.55;
 kappa = 0*ones(size(z)); %fill a matrix of size z with the value of kappa0
-kappa(z>L*kappaStart1) = kappa0*1; %0.5
+kappa(z>L*kappaStart1) = kappa0*0.5; %0.5
 kappa(z>L*kappaStop1) = 0;
-kappa(z>L*kappaStart2) = kappa0*0; %0.53
+kappa(z>L*kappaStart2) = kappa0*0.53; %0.53
 kappa(z>L*kappaStop2) = 0;
-kappa(z>L*kappaStart3) = kappa0*2; %0.0
+kappa(z>L*kappaStart3) = kappa0*0; %0.0
 kappa(z>L*kappaStop3) = 0;
-kappa(z>L*kappaStart4) = kappa0*0; %0.8
+kappa(z>L*kappaStart4) = kappa0*0.8; %0.8
 kappa(z>L*kappaStop4) = 0;
-kappa(z>L*kappaStart5) = kappa0*3; %0.0
+kappa(z>L*kappaStart5) = kappa0*0; %0.0
 kappa(z>L*kappaStop5) = 0;
 
 Ef = zeros(size(z));       % craete array of 0 
@@ -214,6 +214,6 @@ legend('Output', 'Input','east');
 hold off
 
 figure('name', 'Grading')
-xlabel('x (through waveguide)')
-ylabel('Hight of Grating')
+xlabel('x (cm)')
+ylabel('Height of Grating')
 plot(z,kappa);
