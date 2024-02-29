@@ -1,4 +1,4 @@
-%Milestone 4
+%Milestone 6
 set(0, 'defaultaxesfontsize',20)
 set(0,'DefaultFigureWindowStyle','normal')
 set(0,'DefaultLineLineWidth',2);
@@ -20,32 +20,34 @@ RL = 0.0i;
 RR = 0.0i;  %Reflective Efficiency 0.9i
 
 %Milestone 2
-beta_i = 8;
+beta_i = 0;
 beta_r = 0;
 
-InputParasL.E0=100e5;     %Amplitude?
+InputParasL.E0=100e5;     %Amplitude? 100e5
 InputParasL.we = 0;   %Frequency for modulation (1e13)
 InputParasL.t0 = 2e-12;
 InputParasL.wg = 5e-13; %5e-13 
 InputParasL.phi = 0;
+InputParasL.rep = 5e-10;
 InputParasR = 0;
 
 n_g = 3.5; 
 vg = c_c/n_g*1e2;       % TWM cm/s group velocity
 Lambda = 1550e-9;
 
-plotN = 10;
+plotN = 100;
 
 L = 1000e-6*1e2;    %cm
 XL = [0,L];
 YL =[1*-InputParasL.E0,1*InputParasL.E0]; %vertical scale
+%YL = [-1,1];
 
 Nz =500;            
-dz =L/(Nz-1);
+dz =10*L/(Nz-1);
 dt = dz/vg;
 fsync = dt*vg/dz;
 
-Nt =floor(2*Nz);        %designates length of simulation
+Nt =floor(40*Nz);        %designates length of simulation
 tmax = Nt*dt;
 t_L = dt*Nz;               % time to travel length
 
@@ -57,7 +59,7 @@ OutputL = nan(1,Nt);
 OutputR = nan(1,Nt);
 
 %Milestone 3
-kappa0 = 100; %100
+kappa0 = 0; %100
 kappaStart = 1/3;
 kappaStop = 2/3;
 kappa = kappa0*ones(size(z)); %fill a matrix of size z with the value of kappa0
@@ -77,7 +79,31 @@ Prp = Pr;
 g_fwhm = 5*3.53e+012/10;
 LGamma = g_fwhm*2*pi;
 Lw0 = 0.0;
-LGain = 0.1;
+LGain = 0;
+
+%Milestone 6
+Ntr = 1e18;
+n_g = 3.5;
+v_g = c_c/n_g*1e2; %TWM cm/s group velocity
+Lambda = 1550e-9; %Cm
+f0 = c_c/Lambda;
+Nave = nan(1,Nt);
+N = ones(size(z))*Ntr;
+Nave(1)=mean(N);
+% if GenGifs
+%     system(['rm' gifFile]);
+% end
+gain = v_g*2.5e-16;
+eVol = 1.5e-10*c_q;
+Ion = 0.25e-9;
+Ioff = 3e-9;
+I_off = 0.024;
+I_on = 0.1;
+taun = 1e-9;
+Zg = sqrt(c_mu_0/c_eps_0)/n_g;
+EtoP = 1/(Zg*f0*v_g*1e-2*c_hb);
+alpha = 0;
+
 
 Ef1 = @SourceFct; %Handle creation
 ErN = @SourceFct;
@@ -98,17 +124,17 @@ Er(Nz) = InputR(1);
 beta = ones(size(z))*(beta_r+1i*beta_i); %Initializing Beta
 exp_det = exp(-1i*dz*beta);
 
-%Create all initial graphs
-figure('name', 'Fields')
+%Milestone 6 Figure
+figure('name', 'Spontainious')
 subplot(3,1,1)
-plot(z*10000,real(Ef),'r');
+plot(z*10000,real(N));
 hold off
 xlabel('z(\mum)')
-ylabel('E_f')
+ylabel('y')
 subplot(3,1,2)
-plot(z*10000,real(Er),'b');
-xlabel('z(\mum)')
-ylabel('E_r')
+plot(1);
+xlabel('time(ps)')
+ylabel('Nave')
 hold off
 subplot(3,1,3)
 plot(time*1e12,real(InputL),'r'); hold on
@@ -117,8 +143,29 @@ plot(time*1e12,real(InputR),'b'); hold on
 plot(time*1e12,real(OutputL),'b--');
 xlabel('time(ps)')
 ylabel('E')
-
 hold off
+
+%Create all initial graphs
+% figure('name', 'Fields')
+% subplot(3,1,1)
+% plot(z*10000,real(Ef),'r');
+% hold off
+% xlabel('z(\mum)')
+% ylabel('E_f')
+% subplot(3,1,2)
+% plot(z*10000,real(Er),'b');
+% xlabel('z(\mum)')
+% ylabel('E_r')
+% hold off
+% subplot(3,1,3)
+% plot(time*1e12,real(InputL),'r'); hold on
+% plot(time*1e12,real(OutputR),'r--'); 
+% plot(time*1e12,real(InputR),'b'); hold on
+% plot(time*1e12,real(OutputL),'b--');
+% xlabel('time(ps)')
+% ylabel('E')
+% 
+% hold off
 
 %Keep updating graphs and recalculating propegation 
 for i = 2:Nt
@@ -129,7 +176,20 @@ for i = 2:Nt
     Pr(1) = 0;
     Pr(Nz) = 0;
     Cw0 = -LGamma + 1i*Lw0;
-    
+    if i > 12000
+        InputParasL.rep = 1;
+    end
+    %Milestone 6
+    S = (abs(Ef).^2 +abs(Er).^2).*EtoP*1e-6;
+    if t < Ion || t > Ioff
+        I_injv = I_off;
+    else
+        I_injv = I_on;
+    end
+    Stim = gain.*(N-Ntr).*S;
+    N = (N + dt*(I_injv/eVol - Stim))./(1+ dt/taun);
+    Nave(i) = mean(N);
+
     InputL(i) = Ef1(t,InputParasL);
     InputR(i) = ErN(t,0);
 
@@ -155,24 +215,50 @@ for i = 2:Nt
     OutputL(i) = Er(1)*(1-RL);    %Reflecting
 
     if mod(i,plotN) == 0
+        % subplot(3,1,1)
+        % plot(z*10000,real(Ef),'r'); hold on
+        % plot(z*10000,imag(Ef),'r--'); hold off
+        % xlim(XL*1e4)
+        % ylim(YL)
+        % xlabel('z(\mum)')
+        % ylabel('E_f')
+        % legend('\Re','\Im')
+        % hold off
+        % subplot(3,1,2)
+        % plot(z*10000,real(Er),'b'); hold on
+        % plot(z*10000,imag(Er),'b--'); hold off
+        % xlim(XL*1e4)
+        % ylim(YL)
+        % xlabel('z(\mum)')
+        % ylabel('E_r')
+        % legend('\Re','\Im')
+        % 
+        % hold off
+        % subplot(3,1,3);
+        % plot(time*1e12,real(InputL),'r'); hold on
+        % plot(time*1e12,real(OutputR),'g'); 
+        % plot(time*1e12,real(InputR),'b');
+        % plot(time*1e12,real(OutputL),'m');
+        % xlim([0,Nt*dt*1e12])
+        % ylim(YL)
+        % xlabel('time(ps)')
+        % ylabel('0')
+        % legend('Left Input','Right Output', 'Right Input', 'Left Output', 'Location', 'east')
+        % hold off
+        
         subplot(3,1,1)
-        plot(z*10000,real(Ef),'r'); hold on
-        plot(z*10000,imag(Ef),'r--'); hold off
+        plot(z*10000,real(N));
         xlim(XL*1e4)
-        ylim(YL)
+        ylim([1e18,5e18])
         xlabel('z(\mum)')
-        ylabel('E_f')
-        legend('\Re','\Im')
+        ylabel('N')
         hold off
         subplot(3,1,2)
-        plot(z*10000,real(Er),'b'); hold on
-        plot(z*10000,imag(Er),'b--'); hold off
-        xlim(XL*1e4)
-        ylim(YL)
-        xlabel('z(\mum)')
-        ylabel('E_r')
-        legend('\Re','\Im')
-
+        plot(time*1e12,real(Nave));
+        xlim([0,Nt*dt*1e12])
+        ylim()
+        xlabel('time(ps)')
+        ylabel('Nav')
         hold off
         subplot(3,1,3);
         plot(time*1e12,real(InputL),'r'); hold on
@@ -193,33 +279,33 @@ for i = 2:Nt
     Prp = Pr;
 end
 
-%Milestone 2 Taking FFT of the output and input 
-fftOutput = fftshift(fft(OutputR));
-fftInput = fftshift(fft(InputL));
-%Getting the vector of frequencies that are based of time
-omega = fftshift(wspace(time));
-figure('name', 'FFT')
-subplot(3,1,1)
-plot(time*1e12,real(InputL),'r'); hold on
-plot(time*1e12,real(OutputR),'g'); 
-plot(time*1e12,real(InputR),'b'); hold on
-plot(time*1e12,real(OutputL),'m');
-legend('Left Input','Right Output', 'Right Input', 'Left Output', 'Location', 'east')
-xlabel('time(ps)')
-ylabel('E')
-hold off
-subplot(3,1,2)
-plot(omega, 20*log(abs(fftOutput))); hold on 
-plot(omega, 20*log(abs(fftInput)));
-legend('Output', 'Input','east');
-xlim([-0.5E14,0.5E14])
-xlabel('THz*10')
-ylabel('20log(|E|)')
-hold off
-subplot(3,1,3)
-plot(omega, unwrap(angle(fftOutput))); hold on%Unwrap goes from 0-360-0 to 0-360-720
-plot(omega, unwrap(angle(fftInput)));
-xlabel('THz')
-ylabel('phase (E)')
-legend('Output', 'Input','east');
-hold off
+% %Milestone 2 Taking FFT of the output and input 
+% fftOutput = fftshift(fft(OutputR));
+% fftInput = fftshift(fft(InputL));
+% %Getting the vector of frequencies that are based of time
+% omega = fftshift(wspace(time));
+% figure('name', 'FFT')
+% subplot(3,1,1)
+% plot(time*1e12,real(InputL),'r'); hold on
+% plot(time*1e12,real(OutputR),'g'); 
+% plot(time*1e12,real(InputR),'b'); hold on
+% plot(time*1e12,real(OutputL),'m');
+% legend('Left Input','Right Output', 'Right Input', 'Left Output', 'Location', 'east')
+% xlabel('time(ps)')
+% ylabel('E')
+% hold off
+% subplot(3,1,2)
+% plot(omega, 20*log(abs(fftOutput))); hold on 
+% plot(omega, 20*log(abs(fftInput)));
+% legend('Output', 'Input','east');
+% xlim([-0.5E14,0.5E14])
+% xlabel('THz*10')
+% ylabel('20log(|E|)')
+% hold off
+% subplot(3,1,3)
+% plot(omega, unwrap(angle(fftOutput))); hold on%Unwrap goes from 0-360-0 to 0-360-720
+% plot(omega, unwrap(angle(fftInput)));
+% xlabel('THz')
+% ylabel('phase (E)')
+% legend('Output', 'Input','east');
+% hold off
