@@ -1,4 +1,4 @@
-%Milestone 6
+%Milestone 7
 set(0, 'defaultaxesfontsize',20)
 set(0,'DefaultFigureWindowStyle','normal')
 set(0,'DefaultLineLineWidth',2);
@@ -23,7 +23,7 @@ RR = 0.0i;  %Reflective Efficiency 0.9i
 beta_i = 0;
 beta_r = 0;
 
-InputParasL.E0=100e5;     %Amplitude? 100e5
+InputParasL.E0= 1E5;     %Amplitude? 100e5
 InputParasL.we = 0;   %Frequency for modulation (1e13)
 InputParasL.t0 = 2e-12;
 InputParasL.wg = 5e-13; %5e-13 
@@ -111,7 +111,7 @@ beta_i = (gain_z - alpha)./2;
 beta = beta_r + 1i*beta_i;
 beta_spe = .3e-5;
 gamma = 1.0;
-SPE = 7;
+SPE = 0;
 
 Ef1 = @SourceFct; %Handle creation
 ErN = @SourceFct;
@@ -205,9 +205,11 @@ for i = 2:Nt
     Pr(1) = 0;
     Pr(Nz) = 0;
     Cw0 = -LGamma + 1i*Lw0;
+
     if i > 12000
         InputParasL.rep = 1;
     end
+    
     %Milestone 6
     S = (abs(Ef).^2 +abs(Er).^2).*EtoP*1e-6;
     if t < Ion || t > Ioff
@@ -219,21 +221,6 @@ for i = 2:Nt
     N = (N + dt*(I_injv/eVol - Stim))./(1+ dt/taun);
     Nave(i) = mean(N);
     
-
-    %Milestone7
-    A = sqrt(gamma*beta_spe*c_hb*f0*L*1e-2/taun)/(2*Nz);
-    if SPE > 0
-        Tf = (randn(Nz,1)+1i*randn(Nz,1))*A;
-        Tr = (randn(Nz,1)+1i*randn(Nz,1))*A;
-    else
-        Tf = (ones(Nz,1))*A;
-        Tr = (ones(Nz,1))*A;
-    end
-    EsF = Tf*abs(SPE).*sqrt(N.*1e6);
-    EsR = Tr*abs(SPE).*sqrt(N.*1e6);
-
-
-
     InputL(i) = Ef1(t,InputParasL);
     InputR(i) = ErN(t,0);
 
@@ -253,7 +240,19 @@ for i = 2:Nt
 
     Ef(2:Nz-1) = Ef(2:Nz-1) - LGain*(Ef(2:Nz-1)-Pf(2:Nz-1));
     Er(2:Nz-1) = Er(2:Nz-1) - LGain*(Er(2:Nz-1)-Pr(2:Nz-1));
-    
+
+    %Milestone7
+    A = sqrt(gamma*beta_spe*c_hb*f0*L*1e-2/taun)/(2*Nz);
+    if SPE > 0
+        Tf = (randn(Nz,1)+1i*randn(Nz,1))*A;
+        Tr = (randn(Nz,1)+1i*randn(Nz,1))*A;
+    else
+        Tf = (ones(Nz,1))*A;
+        Tr = (ones(Nz,1))*A;
+    end
+    EsF = Tf*abs(SPE).*sqrt(N.*1e6);
+    EsR = Tr*abs(SPE).*sqrt(N.*1e6);
+
     %Milestone 7
     Ef = Ef + EsF;
     Er = Er + EsR;
@@ -312,7 +311,7 @@ for i = 2:Nt
         subplot(3,4,[5,6])
         plot(time*1e12,real(Nave));
         xlim([0,Nt*dt*1e12])
-        ylim()
+        %ylim()
         xlabel('time(ps)')
         ylabel('Nav')
         hold off
@@ -322,7 +321,7 @@ for i = 2:Nt
         plot(time*1e12,real(InputR),'b');
         plot(time*1e12,real(OutputL),'m');
         xlim([0,Nt*dt*1e12])
-        ylim(YL)
+        %ylim()
         xlabel('time(ps)')
         ylabel('0')
         legend('Left Input','Right Output', 'Right Input', 'Left Output', 'Location', 'east')
@@ -335,30 +334,33 @@ for i = 2:Nt
     Prp = Pr;
 end
 
-%Milestone 7 plots
-fftEf = fftshift(fft(Ef));
-fftEr = fftshift(fft(Er));
+%Milestone 7 plots 
+fftOutput = fftshift(fft(OutputR));
+fftInput = fftshift(fft(InputL));
+%Getting the vector of frequencies that are based of time
 omega = fftshift(wspace(time));
 
 subplot(3,4,[3,4])
 plot(time*1e12,real(OutputR),'r');hold on
 plot(time*1e12,real(InputL),'g');
 xlim([0,Nt*dt*1e12])
-ylim(YL)
+%ylim(YL)
 xlabel('time(ps)')
 ylabel('0utput')
 legend('Output','Input','east')
 hold off
 subplot(3,4,[7,8])
-%plot(omega, unwrap(angle(fftEf))); hold on
-%plot(omega, unwrap(angle(fftEr)));
+plot(omega, 20*log(abs(fftOutput))); hold on
+plot(omega, 20*log(abs(fftInput)));
 % xlim()
 % ylim()
 xlabel('GHz')
 ylabel('20 log|E|')
+legend('Output', 'Input', 'east')
 hold off
 subplot(3,4,[11,12])
-plot(1);
+plot(omega, unwrap(angle(fftOutput))); hold on%Unwrap goes from 0-360-0 to 0-360-720
+plot(omega, unwrap(angle(fftInput)));
 % xlim()
 % ylim()
 xlabel('GHz')
