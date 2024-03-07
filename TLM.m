@@ -23,7 +23,7 @@ RR = 0.0i;  %Reflective Efficiency 0.9i
 beta_i = 0;
 beta_r = 0;
 
-InputParasL.E0= 1E5;     %Amplitude? 100e5
+InputParasL.E0= 100E5;     %Amplitude? 100e5
 InputParasL.we = 0;   %Frequency for modulation (1e13)
 InputParasL.t0 = 2e-12;
 InputParasL.wg = 5e-13; %5e-13 
