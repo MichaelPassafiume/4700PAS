@@ -23,7 +23,7 @@ RR = 0.0i;  %Reflective Efficiency 0.9i
 beta_i = 0;
 beta_r = 0;
 
-InputParasL.E0= 100E5;     %Amplitude? 100e5
+InputParasL.E0= 1E5;     %Amplitude? 100e5
 InputParasL.we = 0;   %Frequency for modulation (1e13)
 InputParasL.t0 = 2e-12;
 InputParasL.wg = 5e-13; %5e-13 
@@ -111,7 +111,7 @@ beta_i = (gain_z - alpha)./2;
 beta = beta_r + 1i*beta_i;
 beta_spe = .3e-5;
 gamma = 1.0;
-SPE = 0;
+SPE = 0.0;
 
 Ef1 = @SourceFct; %Handle creation
 ErN = @SourceFct;
@@ -129,7 +129,7 @@ Ef(1) = InputL(1);          %Replacing location in Ef with location InputL
 Er(Nz) = InputR(1);  
 
 %Milestone 2
-%beta = ones(size(z))*(beta_r+1i*beta_i); %Initializing Beta
+beta = ones(size(z)).*(beta_r+1i*beta_i); %Initializing Beta
 exp_det = exp(-1i*dz*beta);
 
 %Milestone 6-7 Figure
@@ -205,6 +205,12 @@ for i = 2:Nt
     Pr(1) = 0;
     Pr(Nz) = 0;
     Cw0 = -LGamma + 1i*Lw0;
+    
+    gain_z = gain.*(N-Ntr)./v_g;
+    beta_i = (gain_z - alpha)./2;
+    beta = beta_r + 1i*beta_i;
+    beta = ones(size(z)).*(beta_r+1i*beta_i);
+    exp_det = exp(-1i*dz*beta);
 
     if i > 12000
         InputParasL.rep = 1;
@@ -229,9 +235,9 @@ for i = 2:Nt
     
     Ef_temp = Ef(1:Nz-1);
     %Milestone 3 inlcude kappa and couple
-    Ef(2:Nz) = fsync*Ef(1:Nz-1) + 1i*dz*kappa(2:Nz).*Er(2:Nz);
+    Ef(2:Nz) = fsync*exp_det(1:Nz-1).*Ef(1:Nz-1) + 1i*dz*kappa(2:Nz).*Er(2:Nz);
     %Milestone 3 include kappa and couple 
-    Er(1:Nz-1) = fsync*Er(2:Nz) + 1i*dz*kappa(1:Nz-1).*Ef(1:Nz-1);
+    Er(1:Nz-1) = fsync*exp_det(2:Nz).*Er(2:Nz) + 1i*dz*kappa(1:Nz-1).*Ef(1:Nz-1);
 
     Tf = LGamma*Ef(1:Nz-2) + Cw0*Pfp(2:Nz-1) + LGamma*Efp(1:Nz-2);
     Pf(2:Nz-1) = (Pfp(2:Nz-1)+0.5*dt*Tf)./(1-0.5*dt*Cw0);
