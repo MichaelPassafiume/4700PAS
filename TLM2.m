@@ -1,4 +1,4 @@
-%Milestone 6
+%Milestone 8
 set(0, 'defaultaxesfontsize',20)
 set(0,'DefaultFigureWindowStyle','normal')
 set(0,'DefaultLineLineWidth',2);
@@ -17,8 +17,8 @@ c_h = c_hb*2*pi;
 
 
 %Milestone 1
-RL = 0.0i;  
-RR = 0.0i;  %Reflective Efficiency 0.9i
+RL = 0.5i;  
+RR = 0.5i;  %Reflective Efficiency 0.9i
 
 beta_r = 0;
 beta_i = 0;
@@ -59,8 +59,8 @@ Lambda = 1550e-9; %Cm
 gain = v_g*2.5e-16;
 eVol = 1.5e-10*c_q;
 Ion = 0.25e-9;
-Ioff = 3e-9;
-I_off = 0.024;
+Ioff = 6e-9; %3e-9
+I_off = 0.024; %0.024
 I_on = 0.1;
 taun = 1e-9;
 Zg = sqrt(c_mu_0/c_eps_0)/n_g;
