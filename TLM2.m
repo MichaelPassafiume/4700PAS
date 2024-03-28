@@ -1,4 +1,4 @@
-%Milestone 8
+%Milestone9
 set(0, 'defaultaxesfontsize',20)
 set(0,'DefaultFigureWindowStyle','normal')
 set(0,'DefaultLineLineWidth',2);
@@ -59,7 +59,11 @@ Lambda = 1550e-9; %Cm
 gain = v_g*2.5e-16;
 eVol = 1.5e-10*c_q;
 Ion = 0.25e-9;
-Ioff = 6e-9; %3e-9
+Ioff = 2.5e-9; %3e-9
+Ion2 = 3e-9;
+Ioff2 = 3.5e-9;
+Ion3 = 4e-9;
+Ioff3 = 4.5e-9;
 I_off = 0.024; %0.024
 I_on = 0.1;
 taun = 1e-9;
@@ -273,11 +277,22 @@ for i = 2:Nt
     
 
     S = (abs(Ef).^2 + abs(Er).^2).*EtoP*1e-6;
-
-    if t < Ion || t > Ioff
+    
+    t
+    if t < Ion
         I_injv = I_off;
-    else 
+    elseif t > Ion && t < Ioff
         I_injv = I_on;
+    elseif t > Ioff && t < Ion2
+        I_injv = I_off;
+    elseif t > Ion2 && t < Ioff2
+        I_injv = I_on;
+    elseif t > Ioff2 && t < Ion3
+        I_injv = I_off;
+    elseif t > Ion3 && t < Ioff3
+        I_injv = I_on;
+    else
+        I_injv = I_off;
     end
     Stim = gain.*(N - Ntr).*S;
     N = (N + dt*(I_injv/eVol - Stim))./(1+dt/taun);
@@ -350,7 +365,7 @@ for i = 2:Nt
         %ylim()
         xlabel('time(ps)')
         ylabel('0')
-        legend('Left Input','Right Output', 'Right Input', 'Left Output', 'Location', 'east')
+        %legend('Left Input','Right Output', 'Right Input', 'Left Output', 'Location', 'east')
         hold off
         pause(0.01)
     end
