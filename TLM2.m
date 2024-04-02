@@ -24,7 +24,7 @@ beta_r = 0;
 beta_i = 0;
 beta_spe = .3e-5;
 gamma=1.0;
-SPE=7;
+SPE=70;
 
 g_fwhm = 5*3.53e+12/10;
 LGamma = g_fwhm*2*pi;
