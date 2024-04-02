@@ -1,4 +1,4 @@
-%Milestone 6
+%Milestone 7
 set(0, 'defaultaxesfontsize',20)
 set(0,'DefaultFigureWindowStyle','normal')
 set(0,'DefaultLineLineWidth',2);
@@ -38,6 +38,7 @@ InputParasL.t0 = 2e-12;
 InputParasL.wg = 5e-13; %5e-13 
 InputParasL.phi = 0;
 InputParasL.rep = 1;%5e-10
+%InputParasL.rep = 5e-10;
 InputParasR = 0;
 
 n_g = 3.5; 
@@ -61,7 +62,7 @@ eVol = 1.5e-10*c_q;
 Ion = 0.25e-9;
 Ioff = 3e-9;
 I_off = 0.024;
-I_on = 0.1;
+I_on = 0.1; %0.1
 taun = 1e-9;
 Zg = sqrt(c_mu_0/c_eps_0)/n_g;
 EtoP = 1/(Zg*f0*v_g*1e-2*c_hb);
