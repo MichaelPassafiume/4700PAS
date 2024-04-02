@@ -28,7 +28,7 @@ InputParasL.we = 0;   %Frequency for modulation (1e13)
 InputParasL.t0 = 2e-12;
 InputParasL.wg = 5e-13; %5e-13 
 InputParasL.phi = 0;
-InputParasL.rep = 5e-10;
+InputParasL.rep =  5e-10;
 InputParasR = 0;
 
 n_g = 3.5; 
@@ -39,8 +39,8 @@ plotN = 100;
 
 L = 1000e-6*1e2;    %cm
 XL = [0,L];
-YL =[1*-InputParasL.E0,1*InputParasL.E0]; %vertical scale
-%YL = [-1,1];
+%YL =[1*-InputParasL.E0,1*InputParasL.E0]; %vertical scale
+YL = [-1,1];
 
 Nz =500;            
 dz =10*L/(Nz-1);
@@ -96,7 +96,7 @@ Nave(1)=mean(N);
 gain = v_g*2.5e-16;
 eVol = 1.5e-10*c_q;
 Ion = 0.25e-9;
-Ioff = 3e-9;
+Ioff = 4e-9; %0.5e-9
 I_off = 0.024;
 I_on = 0.1;
 taun = 1e-9;
@@ -186,6 +186,10 @@ for i = 2:Nt
     else
         I_injv = I_on;
     end
+%     if t > Ioff
+%         Ion = Ion + 0.5e-9;
+%         Ioff = Ioff + 0.5e-9;
+%     end
     Stim = gain.*(N-Ntr).*S;
     N = (N + dt*(I_injv/eVol - Stim))./(1+ dt/taun);
     Nave(i) = mean(N);
