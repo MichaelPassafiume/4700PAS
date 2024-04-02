@@ -59,11 +59,11 @@ Lambda = 1550e-9; %Cm
 gain = v_g*2.5e-16;
 eVol = 1.5e-10*c_q;
 Ion = 0.25e-9;
-Ioff = 2.5e-9; %3e-9
-Ion2 = 3e-9;
-Ioff2 = 3.5e-9;
-Ion3 = 4e-9;
-Ioff3 = 4.5e-9;
+Ioff = 1.5e-9; %3e-9
+Ion2 = 2.0e-9;
+Ioff2 = 2.1e-9;
+Ion3 = 3e-9;
+Ioff3 = 3.1e-9;
 I_off = 0.024; %0.024
 I_on = 0.1;
 taun = 1e-9;
@@ -176,6 +176,7 @@ xlabel('GHz')
 ylabel('phase (E)')
 hold off
 
+bit = 0;
 %Create all initial graphs
 % figure('name', 'Fields')
 % subplot(3,1,1)
@@ -278,7 +279,7 @@ for i = 2:Nt
 
     S = (abs(Ef).^2 + abs(Er).^2).*EtoP*1e-6;
     
-    t
+    
     if t < Ion
         I_injv = I_off;
     elseif t > Ion && t < Ioff
@@ -287,13 +288,35 @@ for i = 2:Nt
         I_injv = I_off;
     elseif t > Ion2 && t < Ioff2
         I_injv = I_on;
-    elseif t > Ioff2 && t < Ion3
-        I_injv = I_off;
-    elseif t > Ion3 && t < Ioff3
-        I_injv = I_on;
+%     elseif t > Ioff2 && t < Ion3
+%         I_injv = I_off;
+%     elseif t > Ion3 && t < Ioff3
+%         I_injv = I_on;
     else
         I_injv = I_off;
     end
+    if t> Ioff2 
+         Ion2 = Ion2 + 0.2e-9;
+         Ioff2 = Ioff2 + 0.2e-9;
+         bit = bit + 1;
+    end
+    if bit == 2
+        I_on = 0.024;
+    elseif bit == 3
+        I_on = 0.1;
+        bit = 0;
+    end
+%1 0 1 0 1 0 pattern
+%     if t> Ioff2 && I_on == 0.1
+%         Ion2 = Ion2 + 0.2e-9;
+%         Ioff2 = Ioff2 + 0.2e-9;
+%         I_on = 0.024;
+%     elseif t> Ioff2 && I_on == 0.024
+%         Ion2 = Ion2 + 0.2e-9;
+%         Ioff2 = Ioff2 + 0.2e-9;
+%         I_on = 0.1;
+%     end
+
     Stim = gain.*(N - Ntr).*S;
     N = (N + dt*(I_injv/eVol - Stim))./(1+dt/taun);
     Nave(i) = mean (N);
