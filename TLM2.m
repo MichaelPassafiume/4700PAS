@@ -59,7 +59,7 @@ Lambda = 1550e-9; %Cm
 gain = v_g*2.5e-16;
 eVol = 1.5e-10*c_q;
 Ion = 0.25e-9;
-Ioff = 6e-9; %3e-9
+Ioff = 10e-9; %3e-9
 I_off = 0.024; %0.024
 I_on = 0.1;
 taun = 1e-9;
@@ -69,7 +69,7 @@ alpha = 0;
 
 plotN = 100;
 
-L = 1000e-6*1e2;    %cm
+L = 2000e-6*1e2;    %cm
 XL = [0,L];
 YL =[1*-InputParasL.E0,1*InputParasL.E0]; %vertical scale
 %YL = [-1,1];
@@ -266,6 +266,12 @@ for i = 2:Nt
     Pfp = Pf;
     Prp = Pr;
     
+%     if t > 1e-9  && t < 1.1e-9
+%         fftOutput_tran = fftshift(fft(OutputR));
+%         fftInput_tran = fftshift(fft(InputL));
+%         %Getting the vector of frequencies that are based of time
+%         omega_tran = fftshift(wspace(time));
+%     end
  
     % if GenGifs
     %     system(['rm' gifFile]);
@@ -418,4 +424,13 @@ hold off
 % xlabel('THz')
 % ylabel('phase (E)')
 % legend('Output', 'Input','east');
+% hold off
+% figure 
+% plot(omega_tran, 20*log(abs(fftOutput_tran))); hold on
+% plot(omega_tran, 20*log(abs(fftInput_tran)));
+% % xlim()
+% % ylim()
+% xlabel('GHz')
+% ylabel('20 log|E|')
+% legend('Output', 'Input', 'east')
 % hold off
